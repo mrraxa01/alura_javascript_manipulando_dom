@@ -14,10 +14,10 @@ const audioPlay = new Audio('/sons/play.wav');
 const audioPausa = new Audio('/sons/pause.mp3');
 const audioTempoFinalizado = new Audio('/sons/beep.mp3');
 const tempoNaTela = document.querySelector('#timer');
-
+let tempoInicialnaTela = 10;
 
 let intervaloId = null;
-let tempoDecorridoSegundos = 1500;
+let tempoDecorridoSegundos = tempoInicialnaTela;
 
 musica.loop = true;
 
@@ -30,7 +30,7 @@ musicaFocoInput.addEventListener('change', ()=>{
 }) 
 
 focoBt.addEventListener('click', () => {
-    tempoDecorridoSegundos = 1500;
+    tempoDecorridoSegundos = tempoInicialnaTela;
     alterarContexto('foco');
     focoBt.classList.add('active');
 })
@@ -74,12 +74,16 @@ const contagemRegressiva = () => {
     if(tempoDecorridoSegundos <= 0){
         audioTempoFinalizado.play();
         alert('Tempo Finalizado!');
+        const focoAtivo = html.getAttribute('data-contexto') == 'foco';
+        if(focoAtivo){
+            const evento = new CustomEvent('FocoFinalizado');
+            document.dispatchEvent(evento);
+        }
         zerar();
         return;
     }
     mostrarTempo();
     tempoDecorridoSegundos -= 1;
-    console.log('Temporizador: ' + tempoDecorridoSegundos);
 }
 startPauseBt.addEventListener('click' ,inicarOuPausar);
 
